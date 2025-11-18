@@ -21,22 +21,22 @@
 			position: absolute;
 		}
 
-		div#gameContainer canvas {
-			position: absolute;
-		}
+			div#gameContainer canvas {
+				position: absolute;
+			}
 
-		div#gameContainer canvas[data-pixel-art="true"] {
-			position: absolute;
-			image-rendering: optimizeSpeed;
-			image-rendering: -webkit-crisp-edges;
-			image-rendering: -moz-crisp-edges;
-			image-rendering: -o-crisp-edges;
-			image-rendering: crisp-edges;
-			image-rendering: -webkit-optimize-contrast;
-			image-rendering: optimize-contrast;
-			image-rendering: pixelated;
-			-ms-interpolation-mode: nearest-neighbor;
-		}
+				div#gameContainer canvas[data-pixel-art="true"] {
+					position: absolute;
+					image-rendering: optimizeSpeed;
+					image-rendering: -webkit-crisp-edges;
+					image-rendering: -moz-crisp-edges;
+					image-rendering: -o-crisp-edges;
+					image-rendering: crisp-edges;
+					image-rendering: -webkit-optimize-contrast;
+					image-rendering: optimize-contrast;
+					image-rendering: pixelated;
+					-ms-interpolation-mode: nearest-neighbor;
+				}
 	</style>
 </head>
 
@@ -91,43 +91,43 @@
 				container.style.top = Math.floor((window.innerHeight - h) / 2) + "px";
 				container.style.left = Math.floor((window.innerWidth - w) / 2) + "px";
 			}
-            createUnityInstance(canvas, config, progressHandler)
-                .then(function (instance) {
-                    // Captura a instância no primeiro .then()
-                    unityGlobalInstance = instance;
-                    canvas = instance.Module.canvas;
-                    onResize();
-                    console.log('Unity Instance Capturada. Pronto para receber token.');
-                })
-                .catch((message) => { // <-- ESSENCIAL: Tratamento de Erro de Carregamento
-                    console.error("Unity Initialization Failed:", message);
-                    // Alerta a mensagem de erro para debug em navegadores
-                    // alert("Erro ao carregar o Unity: " + message);
-                });
+			createUnityInstance(canvas, config, progressHandler)
+				.then(function (instance) {
+					// Captura a instância no primeiro .then()
+					unityGlobalInstance = instance;
+					canvas = instance.Module.canvas;
+					onResize();
+					console.log('Unity Instance Capturada. Pronto para receber token.');
+				})
+				.catch((message) => { // <-- ESSENCIAL: Tratamento de Erro de Carregamento
+					console.error("Unity Initialization Failed:", message);
+					// Alerta a mensagem de erro para debug em navegadores
+					// alert("Erro ao carregar o Unity: " + message);
+				});
 
-            window.addEventListener('resize', onResize);
-            onResize();
+			window.addEventListener('resize', onResize);
+			onResize();
 
-            if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-                // Mobile device style: fill the whole browser client area with the game canvas:
-                const meta = document.createElement('meta');
-                meta.name = 'viewport';
-                meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
-                document.getElementsByTagName('head')[0].appendChild(meta);
-            }
+			if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+				// Mobile device style: fill the whole browser client area with the game canvas:
+				const meta = document.createElement('meta');
+				meta.name = 'viewport';
+				meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+				document.getElementsByTagName('head')[0].appendChild(meta);
+			}
 
-            // Função de ponte para o Flutter (Deve ser global)
-            function receiveUserTokenFromFlutter(resultLink) {
-                if (unityGlobalInstance !== null) {
-                    // Usa a instância capturada para chamar o método C#
-                    // 'CallResultsFromJson' é o GameObject, 'SetResultLink' é o método C#
-                    unityGlobalInstance.SendMessage('CallResultsFromJson', 'SetResultLink', resultLink);
-                    console.log('Token enviado para o Unity: ' + resultLink);
-                } else {
-                    console.warn('Instância do Unity não está pronta ao tentar enviar o token.');
-                    // Você pode adicionar uma fila ou lógica de repetição aqui
-                }
-            }
+			// Função de ponte para o Flutter (Deve ser global)
+			function receiveUserTokenFromFlutter(resultLink) {
+				if (unityGlobalInstance !== null) {
+					// Usa a instância capturada para chamar o método C#
+					// 'CallResultsFromJson' é o GameObject, 'SetResultLink' é o método C#
+					unityGlobalInstance.SendMessage('ResultsController', 'SetResultLink', resultLink);
+					console.log('Token enviado para o Unity: ' + resultLink);
+				} else {
+					console.warn('Instância do Unity não está pronta ao tentar enviar o token.');
+					// Você pode adicionar uma fila ou lógica de repetição aqui
+				}
+			}
 		</script>
 	</div>
 </body>
